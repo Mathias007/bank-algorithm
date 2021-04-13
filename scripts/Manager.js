@@ -1,18 +1,33 @@
 export class Manager {
-    comparePercentageAndTransfer = (banksCollection) => {
+    reportFinances = (banksCollection) => {
+        let summaryResources = 0;
+
+        banksCollection.forEach((bank, index) => {
+            console.log(
+                `Wyciąg z konta w banku ${bank.bankName}: ${bank.accountState}zł.`
+            );
+            summaryResources += parseFloat(bank.accountState);
+        });
+
+        console.log(
+            `Na wszystkich kontach posiadasz aktualnie łącznie: ${summaryResources}zł.`
+        );
+    };
+
+    compareAccountsProfitability = (banksCollection) => {
         let percentageArray = [];
 
         let bestPercentageAtThisMoment;
         let bestBankAtThisMoment;
 
-        banksCollection.forEach((bank, index) => {
-            percentageArray.push(parseFloat(bank.percentage));
-            console.log(`oprocentowanie w ${bank.bankName}:`, bank.percentage);
+        banksCollection.forEach((checkedBank, index) => {
+            percentageArray.push(parseFloat(checkedBank.percentage));
         });
 
         bestPercentageAtThisMoment = Math.max(...percentageArray);
         bestBankAtThisMoment = banksCollection.find(
-            (bank) => bank.percentage == bestPercentageAtThisMoment
+            (checkedBank) =>
+                checkedBank.percentage == bestPercentageAtThisMoment
         );
 
         console.log(
@@ -31,26 +46,31 @@ export class Manager {
         bestBank,
         banksCollection
     ) => {
-        banksCollection.forEach((bank, index) => {
+        banksCollection.forEach((checkedBank, index) => {
             if (
-                bestPercentage > bank.transferProvision &&
-                bank.accountState > 0
+                bestPercentage > checkedBank.transferProvision &&
+                checkedBank.accountState > 0
             ) {
                 bestBank.accountState +=
-                    bank.accountState -
-                    bank.accountState * (bank.transferProvision / 100);
-                bank.accountState = 0;
+                    checkedBank.accountState -
+                    checkedBank.accountState *
+                        (checkedBank.transferProvision / 100);
+                checkedBank.accountState = 0;
                 console.log(
-                    `transfer środków z ${bank.bankName} do ${bestBank.bankName}`
+                    `transfer środków z ${checkedBank.bankName} do ${bestBank.bankName}`
                 );
             }
         });
     };
 
-    updateAccountSituation = (refreshTime, banksCollection) => {
+    updateFinancialSituation = (refreshTime, banksCollection) => {
         setInterval(
-            this.comparePercentageAndTransfer(banksCollection),
+            () => this.compareAccountsProfitability(banksCollection),
             refreshTime
         );
+    };
+
+    showFinancialSituation = (reportTime, banksCollection) => {
+        setInterval(() => this.reportFinances(banksCollection), reportTime);
     };
 }
