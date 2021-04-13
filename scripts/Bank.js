@@ -1,5 +1,8 @@
-export class Bank {
+import { Randomize } from "./Randomize.js";
+
+export class Bank extends Randomize {
     constructor(bankName, accountState) {
+        super();
         this.bankName = bankName;
         this.accountState = accountState;
     }
@@ -7,15 +10,6 @@ export class Bank {
     capitalizationCycle; // seconds
     percentage; // percent
     transferProvision; // percent
-
-    // Universal randomize methods
-    getRandomInt = (min, max) => {
-        return Math.floor(Math.random() * (max - min + 1) + min);
-    };
-
-    getRandomNumber = (max) => {
-        return Math.random() * max;
-    };
 
     // Bank parameters handlers
 
@@ -35,9 +29,10 @@ export class Bank {
         console.group(`Bank ${this.bankName} - cykliczna aktualizacja`);
         console.log(`Stan konta przed kapitalizacją: ${this.accountState}`);
         console.log(
-            `Wartość kapitalizacji: ${
-                (this.accountState * this.percentage) / 100
-            }`
+            `Wartość kapitalizacji: ${(
+                (this.accountState * this.percentage) /
+                100
+            ).toFixed(2)}`
         );
         this.accountState = (
             this.accountState *
